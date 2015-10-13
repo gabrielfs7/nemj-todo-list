@@ -1,0 +1,31 @@
+extends ../layout
+block content
+    h1.
+        #{title}
+    ul(class="list-group")
+        li(class="list-group-item")
+            form#formAddBlob(name="addTask",method="post",action="/tasks")
+                div(class='row')
+                    div(class='col-lg-6')
+                        input#inputName(type="text", placeholder="ex. Pay my bills", name="name", class='form-control')
+                    div(class='col-lg-5')
+                        input#inputDob(type="date", name="doUntil", placeholder='Do until...', , class='form-control')
+                    div(class='col-lg-1')
+                        button#btnSubmit(type="submit", class='btn btn-info pull-right')
+                            i(class='glyphicon glyphicon-plus-sign')
+                            span(class='clearfix')
+    ul(class="list-group")
+        - each task, i in tasks
+            li(class="list-group-item")
+                = task.name
+                = task.createdAt
+                = task.doUntil
+                form(action='/tasks/#{task._id}/edit',method='post',enctype='application/x-www-form-urlencoded',class='pull-right')
+                    input(type='hidden',value='DELETE',name='_method')
+                    button(type='submit',class='btn btn-danger')
+                        i(class='glyphicon glyphicon-trash')
+                a(href='/tasks/#{task._id}/edit', class='btn btn-info pull-right')
+                    i(class='glyphicon glyphicon-pencil')
+                a(href='/tasks/#{task._id}', class='btn btn-default pull-right')
+                    i(class='glyphicon glyphicon-eye-open')
+                span(class='clearfix')
