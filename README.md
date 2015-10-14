@@ -1,3 +1,5 @@
+A TODO LIST App written using MongoDB, NodeJS, Express and Jade. Using Gulp as task runner, sass, bootstrap 3, etc. Amazing sample app to learn these amazing web development tools!
+
 # INSTALL EXPRESS
 
 $ npm install -g express
