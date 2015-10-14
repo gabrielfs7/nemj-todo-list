@@ -3,8 +3,8 @@
 /.idea
 /dist
 /node_modules
-/nodewebapp
 /public/fonts/*
 /public/images/*
 /public/javascripts/*
 /public/stylesheets/*
+/npm-debug.log

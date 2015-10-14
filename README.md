@@ -5,7 +5,7 @@ $ npm install -g express-generator
 
 # CREATE APPLICATION
 
-$ express nodewebapp
+$ express nemj-todo-list (It is not necessary, just to document)
 
 # INSTALL MONGODB
 
@@ -18,22 +18,11 @@ $ sudo mkdir /data/db
 $ sudo mongod
 $ mongo
 
-use nodewebappdb (inside mondo console)
-
+use nemj-todo-list (inside mondo console)
 
 # INSTALL PROJECT DEPENDENCIES
 
 $ npm install
-$ npm install mongoose --save
-$ npm install body-parser --save
-$ npm install method-override --save
-
-# TEST WORKING
-
-$ npm start
-
-Access in the browser: http://127.0.0.1:3000/
-
 
 # INSTALL SASS
 
@@ -41,11 +30,16 @@ $ gem install sass
 
 # RUNNING GULP TASKS
 
-$ gulp bower
-$ gulp icons
-$ gulp css
+$ gulp
 
 # INSTALL COMPASS (Framework for Sass)
 
 gem update --system
 gem install compass
+
+# TEST WORKING
+
+$ sudo mongod
+$ sudo npm start (inside project folder)
+
+Access in the browser: http://127.0.0.1:3000/
