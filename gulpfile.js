@@ -28,169 +28,280 @@ var config = {
     ]
 };
 
-/////////////////////////////////////////////////
-// Log Errors
-/////////////////////////////////////////////////
-
-function errorlog(err){
+/**
+ * @param err
+ */
+function errorLog(err)
+{
     console.error(err.message);
 
     this.emit('end');
 }
 
-// ////////////////////////////////////////////////
-// Scripts Tasks
-// ///////////////////////////////////////////////
+/**
+ * Scripts Tasks
+ */
+gulp.task(
+    'scripts',
+    function()
+    {
+        return gulp
+            .src(config.jsConcatFiles)
+            .pipe(sourcemaps.init())
+            .pipe(uglify())
+            .on('error', errorLog)
+            .pipe(rename('app.min.js'))
+            .pipe(sourcemaps.write('../maps/javascripts/'))
+            .pipe(gulp.dest('./public/javascripts/'))
+            .pipe(
+                reload(
+                    {
+                        stream: true
+                    }
+                )
+            );
+    }
+);
 
-gulp.task('scripts', function() {
-    return gulp.src(config.jsConcatFiles)
-        .pipe(sourcemaps.init())
-        .pipe(concat('temp.js'))
-        .pipe(uglify())
-        .on('error', errorlog)
-        .pipe(rename('app.min.js'))
-        .pipe(sourcemaps.write('../maps'))
-        .pipe(gulp.dest('./app/js/'))
-        .pipe(reload({stream:true}));
-});
+/**
+ * Start Bower
+ */
+gulp.task(
+    'bower',
+    function()
+    {
+        return bower()
+            .pipe(gulp.dest(config.bowerDir))
+    }
+);
 
-gulp.task('bower', function() {
-    return bower()
-        .pipe(gulp.dest(config.bowerDir))
-});
-
-gulp.task('icons', function() {
-    return gulp.src(config.bowerDir + '/fontawesome/fonts/**.*')
-        .pipe(gulp.dest('./public/fonts'));
-});
-
-// ////////////////////////////////////////////////
-// Styles Tasks
-// ////////////////////////////////////////////////
-var cssPaths = [
-    config.bowerDir + '/fontawesome/scss/*.scss'
-];
-
-gulp.task('styles', function() {
-    gulp.src(config.sassPath)
-        .pipe(sourcemaps.init())
-        .pipe(
-            autoprefixer(
-                {
-                    browsers: ['last 2 versions'],
-                    cascade: false
-                }
+/**
+ * Copy general styles to public folder
+ */
+gulp.task(
+    'styles',
+    function()
+    {
+        gulp.src([config.sassPath + '/style.scss'])
+            .pipe(sourcemaps.init())
+            .pipe(
+                autoprefixer(
+                    {
+                        browsers: ['last 2 versions'],
+                        cascade: false
+                    }
+                )
             )
-        )
-        .pipe(
-            sass(
-                {
-                    style: 'compressed',
-                    loadPath: './public/stylesheets'
-                }
+            .pipe(
+                sass(
+                    {
+                        style: 'compressed',
+                        loadPath: './public/stylesheets'
+                    }
+                )
             )
-        )
-        .on('error', errorlog)
-        .pipe(sourcemaps.write())
-        .pipe(gulp.dest('./public/stylesheets'))
-        .pipe(reload({stream:true}));
-});
+            .on('error', errorLog)
+            .pipe(sourcemaps.write('../maps/stylesheets/'))
+            .pipe(gulp.dest('./public/stylesheets'))
+            .pipe(
+                reload(
+                    {
+                        stream: true
+                    }
+                )
+            );
+    }
+);
 
-gulp.task('bootstrap', function() {
-    return gulp.src('./resources/sass/app.scss')
-        .pipe(sass({
-            loadPath: [
-                config.bowerDir + '/bootstrap-sass/assets/stylesheets',
-                config.bowerDir + '/font-awesome/scss',
-            ]
-        }))
-        .pipe(gulp.dest('./public/stylesheets'));
-});
+/**
+ * Load bootstrap configuration
+ */
+gulp.task(
+    'bootstrap',
+    function()
+    {
+        return gulp
+            .src('./resources/sass/app.scss')
+            .pipe(
+                sass(
+                    {
+                        style: 'compressed',
+                        loadPath: [
+                            config.bowerDir + '/bootstrap-sass/assets/stylesheets',
+                            config.bowerDir + '/font-awesome/scss',
+                        ]
+                    }
+                )
+            )
+            .pipe(gulp.dest('./public/stylesheets'));
+    }
+);
 
-gulp.task('fonts', function() {
-    return gulp.src(config.bowerDir + '/bootstrap-sass/assets/fonts/**/*')
-        .pipe(gulp.dest('./public/fonts'));
-});
+/**
+ * Copy fonts
+ */
+gulp.task(
+    'fonts',
+    function()
+    {
+        return gulp
+            .src(config.bowerDir + '/bootstrap-sass/assets/fonts/**/*')
+            .pipe(gulp.dest('./public/fonts'));
+    }
+);
 
-// ////////////////////////////////////////////////
-// HTML Tasks
-// // /////////////////////////////////////////////
-gulp.task('html', function() {
-    var YOUR_LOCALS = {};
+/**
+ * Transfer Jade HTML template
+ */
+gulp.task(
+    'html',
+    function()
+    {
+        var YOUR_LOCALS = {};
 
-    gulp.src('./views/**/*.jade')
-        .pipe(data(function(file) {
-            return {};
-        }))
-        .pipe(jade({
-            locals: YOUR_LOCALS
-        }))
-        .pipe(gulp.dest('./dist/'))
-        .pipe(reload({stream:true}));
-});
+        gulp
+            .src('./views/**/*.jade')
+            .pipe(
+                data(
+                    function(file)
+                    {
+                        return {};
+                    }
+                )
+            )
+            .pipe(
+                jade(
+                    {
+                        locals : YOUR_LOCALS
+                    }
+                )
+            )
+            .pipe(gulp.dest('./dist/'))
+            .pipe(
+                reload(
+                    {
+                        stream : true
+                    }
+                )
+            );
+    }
+);
 
-// Rerun the task when a file changes
-gulp.task('browser-sync', function() {
-    browserSync.init(
-        {
-            ui: {
-                port: 3000
-            },
-            proxy: "localhost:3000"
-            //,
-            //server : {
-            //    port: "3000",
-            //    baseDir: "./public"
-            //}
-            //server : {
-            //    baseDir: "./public"
-            //}
-        }
-    );
-});
+/**
+ * Rerun the task when a file changes
+ */
+gulp.task(
+    'browser-sync',
+    function()
+    {
+        browserSync.init(
+            {
+                ui: {
+                    port: 3000
+                },
+                proxy: "localhost:3000"
+            }
+        );
+    }
+);
 
-////////////////////////////////////////////////////
-// Build Tasks
-////////////////////////////////////////////////////
+/**
+ * Task to run build server for testing final app
+ */
+gulp.task(
+    'build:serve',
+    function()
+    {
+        browserSync(
+            {
+                server: {
+                    baseDir: "./build/"
+                }
+            }
+        );
+    }
+);
 
-// task to run build server for testing final app
-gulp.task('build:serve', function() {
-    browserSync({
-        server: {
-            baseDir: "./build/"
-        }
-    });
-});
+/**
+ * Clean out all files and folders from build folder
+ */
+gulp.task(
+    'build:cleanfolder',
+    function (cb)
+    {
+        del(
+            [
+                'build/**'
+            ],
+            cb
+        );
+    }
+);
 
-// clean out all files and folders from build folder
-gulp.task('build:cleanfolder', function (cb) {
-    del([
-        'build/**'
-    ], cb);
-});
+/**
+ * Task to create build directory of all files
+ */
+gulp.task(
+    'build:copy',
+    [
+        'build:cleanfolder'
+    ],
+    function()
+    {
+        return gulp
+            .src('app/**/*/')
+            .pipe(gulp.dest('build/'));
+    }
+);
 
-// task to create build directory of all files
-gulp.task('build:copy', ['build:cleanfolder'], function(){
-    return gulp.src('app/**/*/')
-        .pipe(gulp.dest('build/'));
-});
+/**
+ * Task to removed unwanted build files
+ * List all files and directories here that you don't want included
+ */
+gulp.task(
+    'build:remove',
+    [
+        'build:copy'
+    ],
+    function (cb)
+    {
+        del(config.buildFilesFoldersRemove, cb);
+    }
+);
 
-// task to removed unwanted build files
-// list all files and directories here that you don't want included
-gulp.task('build:remove', ['build:copy'], function (cb) {
-    del(config.buildFilesFoldersRemove, cb);
-});
+/**
+ * Build task
+ */
+gulp.task(
+    'build',
+    [
+        'build:copy',
+        'build:remove'
+    ]
+);
 
-gulp.task('build', ['build:copy', 'build:remove']);
+/**
+ * Watch Tasks
+ */
+gulp.task(
+    'watch',
+    function()
+    {
+        gulp.watch('./resources/sass/**/*.scss', ['styles']);
+        gulp.watch('./resources/js/**/*.js', ['scripts']);
+        gulp.watch('./views/**/*.jade', ['html']);
+    }
+);
 
-// ////////////////////////////////////////////////
-// Watch Tasks
-// // /////////////////////////////////////////////
-
-gulp.task ('watch', function(){
-    gulp.watch('resources/sass/**/*.scss', ['styles']);
-    gulp.watch('resources/js/**/*.js', ['scripts']);
-    gulp.watch('views/**/*.jade', ['html']);
-});
-
-gulp.task('default', ['bootstrap', 'fonts', 'scripts', 'styles', 'html', 'browser-sync', 'watch']);
+gulp.task(
+    'default',
+    [
+        'bootstrap',
+        'fonts',
+        'scripts',
+        'styles',
+        'html',
+        'browser-sync',
+        'watch'
+    ]
+);
