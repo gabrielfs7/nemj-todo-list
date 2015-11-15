@@ -38,12 +38,14 @@ router.route('/')
         var name = req.body.name;
         var doUntil = req.body.doUntil;
 
-        mongoose.model('Task').create({
+        mongoose.model('Task')
+            .create({
             name : name,
             doUntil : doUntil,
-            createdAt : Date.now(),
+            createdAt : Date.now()
         }, function (err, registry) {
             if (err) {
+                console.log(err);
                 return res.send("There was a problem adding the information to the database.");
             }
 

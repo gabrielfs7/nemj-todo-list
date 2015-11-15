@@ -9,16 +9,3 @@ block content
         - each task, i in tasks
             li(class="list-group-item")
                 +taskForm(task)
-            //
-                = task.name
-                = task.createdAt
-                = task.doUntil
-                form(action='/tasks/#{task._id}/edit',method='post',enctype='application/x-www-form-urlencoded',class='pull-right')
-                    input(type='hidden',value='DELETE',name='_method')
-                    button(type='submit',class='btn btn-danger')
-                        i(class='glyphicon glyphicon-trash')
-                a(href='/tasks/#{task._id}/edit', class='btn btn-info pull-right')
-                    i(class='glyphicon glyphicon-pencil')
-                a(href='/tasks/#{task._id}', class='btn btn-default pull-right')
-                    i(class='glyphicon glyphicon-eye-open')
-                span(class='clearfix')

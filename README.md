@@ -36,12 +36,14 @@ $ gulp
 
 # INSTALL COMPASS (Framework for Sass)
 
-gem update --system
-gem install compass
+$ gem update --system
+$ gem install compass
 
 # TEST WORKING
 
-$ sudo mongod
-$ sudo npm start (inside project folder)
+Go inside project folder and type:
 
-Access in the browser: http://127.0.0.1:3000/
+$ sudo mongod
+$ sudo npm start
+
+Access in the browser: http://127.0.0.1:3000
